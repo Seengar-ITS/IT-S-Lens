@@ -1,0 +1,6 @@
+import React,{useEffect,useState}from'react';import{supabase}from'../lib/supabase.js';import{requireAuth}from'../lib/auth.js';import*as S from'../styles.js';
+export default function History(){
+  const[scans,setScans]=useState([]);
+  useEffect(()=>{requireAuth(window.location.href);supabase.from('lens_scans').select('*').order('created_at',{ascending:false}).then(({data})=>setScans(data||[]));  },[]);
+  return React.createElement('div',{style:S.page},React.createElement('h1',{style:S.h1},'Scan History'),scans.length===0&&React.createElement('div',{style:S.card},React.createElement('p',{style:S.muted},'No scans yet.')),scans.map(s=>React.createElement('div',{key:s.id,style:{...S.card,cursor:'pointer'},onClick:()=>window.location.href='/result/'+s.id},s.image_url&&React.createElement('img',{src:s.image_url,style:{maxWidth:'120px',height:'80px',objectFit:'cover',borderRadius:'6px',marginBottom:'0.5rem'}}),React.createElement('p',{style:S.muted},new Date(s.created_at).toLocaleString()))));
+}
